@@ -4,49 +4,44 @@ import java.util.*;
 
 public class Schedule {
     private final model.Module[] modules;
-    private HashMap<String, Lesson> result = new HashMap<>();
+    private final HashMap<String, Lesson> result = new HashMap<>();
 
     public Schedule(model.Module[] modules){
         this.modules = modules;
     }
 
     public HashMap<String, Lesson> getResult(){
-        sortLectures();
-        if(findResult(0, modulesWithExercise())){
+        if(sortLectures() && findExercises(0, modulesWithExercise())){
             return result;
         }
         return null;
     }
 
-    private void sortLectures(){
-        for(var module : modules){
+    private boolean sortLectures(){
+        for(Module module : modules){
             int i = 1;
             if(module.getLectures() == null && module.getLectures().isEmpty())
                 continue;
             for(Lesson lecture : module.getLectures()) {
+                if(overlap(lecture))
+                    return false;
                 result.put(module.getName() + " lecture" + i, lecture);
                 i++;
             }
         }
+        return true;
     }
 
-    private boolean findResult(int amount, model.Module[] modulesWithExercise){
+    private boolean findExercises(int amount, model.Module[] modulesWithExercise){
         if(amount == modulesWithExercise.length)
             return true;
         for(Lesson exercise : modulesWithExercise[amount].getExercises()){
-            boolean accepted = true;
-            for(Lesson lesson : result.values()){
-                if(overlap(lesson, exercise)){
-                    accepted = false;
-                    break;
-                }
-            }
-            if(accepted) {
-                result.put(modulesWithExercise[amount].getName() + " exercise", exercise);
-                if (findResult(amount + 1, modulesWithExercise))
-                    return true;
-                result.remove(modulesWithExercise[amount].getName() + " exercise");
-            }
+            if(overlap(exercise))
+                continue;
+            result.put(modulesWithExercise[amount].getName() + " exercise", exercise);
+            if (findExercises(amount + 1, modulesWithExercise))
+                return true;
+            result.remove(modulesWithExercise[amount].getName() + " exercise");
         }
         return false;
     }
@@ -65,5 +60,13 @@ public class Schedule {
         return  lesson1.getDay() == lesson2.getDay() &&
                 lesson2.getStartTime().isBefore(lesson1.getEndTime()) &&
                 lesson1.getEndTime().isAfter(lesson2.getStartTime());
+    }
+
+    private boolean overlap(Lesson lesson){
+        for(Lesson lessonToCheck : result.values()){
+            if(overlap(lesson, lessonToCheck))
+                return true;
+        }
+        return false;
     }
 }
