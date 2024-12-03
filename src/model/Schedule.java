@@ -25,7 +25,7 @@ public class Schedule {
             for(Lesson lecture : module.getLectures()) {
                 if(overlap(lecture))
                     return false;
-                result.put(module.getName() + " lecture" + i, lecture);
+                result.put(module.getName() + " Lecture" + i, lecture);
                 i++;
             }
         }
@@ -38,10 +38,10 @@ public class Schedule {
         for(Lesson exercise : modulesWithExercise[amount].getExercises()){
             if(overlap(exercise))
                 continue;
-            result.put(modulesWithExercise[amount].getName() + " exercise", exercise);
+            result.put(modulesWithExercise[amount].getName() + " Exercise", exercise);
             if (findExercises(amount + 1, modulesWithExercise))
                 return true;
-            result.remove(modulesWithExercise[amount].getName() + " exercise");
+            result.remove(modulesWithExercise[amount].getName() + " Exercise");
         }
         return false;
     }

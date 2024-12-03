@@ -3,9 +3,11 @@ package controller;
 import dataBase.DataBase;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import model.Schedule;
 import model.Lesson;
 import model.Module;
@@ -43,10 +45,17 @@ public class ScheduleController {
             for(Map.Entry<String, Lesson> entrySet : result.entrySet()){
                 for(int row : getRows(entrySet.getValue())){
                     String text = entrySet.getKey();
-                    if(text.matches(".*lecture\\d+$"))
+                    if(text.matches(".*Lecture\\d+$"))
                         text = text.substring(0, text.length()-1);
-                    ((Text)nodes.get(row+","+getColumn(entrySet.getValue()))).
-                            setText(text);
+
+                    Node node = nodes.get(row+","+getColumn(entrySet.getValue()));
+                    ((Text)node).setText(text);
+
+                    Tooltip tooltip = new Tooltip(text + "\n" + entrySet.getValue().toString());
+                    tooltip.setShowDelay(Duration.millis(0));
+                    tooltip.setShowDuration(Duration.minutes(2));
+
+                    Tooltip.install(node, tooltip);
                 }
             }
             success.setVisible(true);
