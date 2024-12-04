@@ -204,16 +204,15 @@ public class InputController implements Initializable {
     }
 
     public void done(ActionEvent event) throws IOException {
-        if(moduleName.getText().isEmpty()){
+        if(moduleName.getText().trim().isEmpty()){
             error.setText("Please enter a name for the module");
         }
-        if(!moduleName.getText().isEmpty()){
+        else{
             DataBase.modules.add(new Module(moduleName.getText(),
                     sortLesson(optionsLecture),
                     sortLesson(optionsExercise)));
+            sceneChanger.changeScene("/view/DisplayScene.fxml", event);
         }
-
-        sceneChanger.changeScene("/view/DisplayScene.fxml", event);
     }
 
     private List<Lesson> sortLesson(ObservableList<Lesson> options){

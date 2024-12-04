@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.Schedule;
@@ -52,6 +53,7 @@ public class ScheduleController {
                     ((Text)node).setText(text);
 
                     Tooltip tooltip = new Tooltip(text + "\n" + entrySet.getValue().toString());
+                    tooltip.setFont(Font.font("Comic Sans MS"));
                     tooltip.setShowDelay(Duration.millis(0));
                     tooltip.setShowDuration(Duration.minutes(2));
 

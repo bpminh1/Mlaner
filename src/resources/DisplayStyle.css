@@ -1,0 +1,11 @@
+.tree-view {
+    -fx-background-color: #CBDCEB; /* Background color of the entire TreeView */
+    -fx-font-size: 15px; /* Apply font size to cells */
+    -fx-font-family: "Comic Sans MS";
+}
+
+.tree-view .cell {
+    -fx-background-color: #CBDCEB; /* Background color for the cells */
+    -fx-font-size: 15px;      /* Apply font size to cells */
+    -fx-font-family: "Comic Sans MS";
+}

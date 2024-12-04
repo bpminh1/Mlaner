@@ -1,0 +1,16 @@
+.list-view {
+    -fx-background-color: #CBDCEB; /* Background color of the entire ListView */
+    -fx-font-size: 14px;      /* Apply font size to cells */
+    -fx-font-family: "Comic Sans MS";
+}
+
+.list-view .cell {
+    -fx-background-color: #CBDCEB; /* Background color for individual cells */
+    -fx-font-size: 14px;      /* Apply font size to cells */
+    -fx-font-family: "Comic Sans MS";
+}
+
+.choice-box{
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 13px;
+}
