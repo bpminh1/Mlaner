@@ -64,8 +64,10 @@ public class Schedule {
 
     private boolean overlap(Lesson lesson){
         for(Lesson lessonToCheck : result.values()){
-            if(overlap(lesson, lessonToCheck))
+            if(overlap(lesson, lessonToCheck)) {
+                System.out.println(String.format("%c", 0x0001F97A));
                 return true;
+            }
         }
         return false;
     }
