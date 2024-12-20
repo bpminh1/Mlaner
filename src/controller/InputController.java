@@ -126,12 +126,12 @@ public class InputController implements Initializable {
     }
 
     public void editDisplay(Module module, Lesson lecture, Lesson exercise, ActionEvent event){
-        moduleName.setText(module.getName());
+        moduleName.setText(module.name());
 
-        optionsLecture.setAll(module.getLectures());
+        optionsLecture.setAll(module.lectures());
         listViewLecture.setItems(optionsLecture);
 
-        optionsExercise.setAll(module.getExercises());
+        optionsExercise.setAll(module.exercises());
         listViewExercise.setItems(optionsExercise);
 
         if(lecture != null){
@@ -148,11 +148,11 @@ public class InputController implements Initializable {
                                ChoiceBox<DayOfWeek> day,
                                TextField startHour, TextField startMinute,
                                TextField endHour, TextField endMinute){
-        day.setValue(selectedLesson.getDay());
-        startHour.setText(String.valueOf(selectedLesson.getStartTime().getHour()));
-        startMinute.setText(String.valueOf(selectedLesson.getStartTime().getMinute()));
-        endHour.setText(String.valueOf(selectedLesson.getEndTime().getHour()));
-        endMinute.setText(String.valueOf(selectedLesson.getEndTime().getMinute()));
+        day.setValue(selectedLesson.day());
+        startHour.setText(String.valueOf(selectedLesson.startTime().getHour()));
+        startMinute.setText(String.valueOf(selectedLesson.startTime().getMinute()));
+        endHour.setText(String.valueOf(selectedLesson.endTime().getHour()));
+        endMinute.setText(String.valueOf(selectedLesson.endTime().getMinute()));
     }
 
     public void addButton(ActionEvent event) {
@@ -216,8 +216,8 @@ public class InputController implements Initializable {
     }
 
     private List<Lesson> sortLesson(ObservableList<Lesson> options){
-        return options.stream().sorted(Comparator.comparing(Lesson::getDay).
-                thenComparing(Lesson::getStartTime)).toList();
+        return options.stream().sorted(Comparator.comparing(Lesson::day).
+                thenComparing(Lesson::startTime)).toList();
     }
 
     private LocalTime formatTime(TextField hour, TextField minute){

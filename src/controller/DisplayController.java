@@ -36,8 +36,8 @@ public class DisplayController implements Initializable {
                                 return;
                             delete.setVisible(true);
                             edit.setVisible(true);
-                            if((selectedItem.getValue().equals("Lecture") && ((Module) selectedItem.getParent().getValue()).getLectures().isEmpty())||
-                                    (selectedItem.getValue().equals("Exercise") && ((Module) selectedItem.getParent().getValue()).getExercises().isEmpty()))
+                            if((selectedItem.getValue().equals("Lecture") && ((Module) selectedItem.getParent().getValue()).lectures().isEmpty())||
+                                    (selectedItem.getValue().equals("Exercise") && ((Module) selectedItem.getParent().getValue()).exercises().isEmpty()))
                                 delete.setVisible(false);
                 });
     }
@@ -51,9 +51,9 @@ public class DisplayController implements Initializable {
             TreeItem<Object> lectureNode = new TreeItem<>("Lecture");
             TreeItem<Object> exerciseNode = new TreeItem<>("Exercise");
             moduleNode.getChildren().addAll(lectureNode, exerciseNode);
-            for(Lesson lecture : module.getLectures())
+            for(Lesson lecture : module.lectures())
                 lectureNode.getChildren().add(new TreeItem<>(lecture));
-            for(Lesson exercise : module.getExercises()){
+            for(Lesson exercise : module.exercises()){
                 exerciseNode.getChildren().add(new TreeItem<>(exercise));
             }
         }
@@ -102,12 +102,12 @@ public class DisplayController implements Initializable {
         else{
             Module module = (Module) selectedItem.getParent().getParent().getValue();
             if(selectedItem.getParent().getValue().equals("Exercise")){
-                ArrayList<Lesson> exercises = new ArrayList<>(module.getExercises());
+                ArrayList<Lesson> exercises = new ArrayList<>(module.exercises());
                 exercises.remove((Lesson) selectedItem.getValue());
                 module.setExercises(exercises);
             }
             else{
-                ArrayList<Lesson> lectures = new ArrayList<>(module.getLectures());
+                ArrayList<Lesson> lectures = new ArrayList<>(module.lectures());
                 lectures.remove((Lesson) selectedItem.getValue());
                 module.setLectures(lectures);
             }

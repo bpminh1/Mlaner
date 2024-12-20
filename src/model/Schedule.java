@@ -20,12 +20,12 @@ public class Schedule {
     private boolean sortLectures(){
         for(Module module : modules){
             int i = 1;
-            if(module.getLectures() == null && module.getLectures().isEmpty())
+            if(module.lectures() == null || module.lectures().isEmpty())
                 continue;
-            for(Lesson lecture : module.getLectures()) {
-                if(overlap(lecture))
+            for(Lesson lecture : module.lectures()) {
+                if(anyOverlap(lecture))
                     return false;
-                result.put(module.getName() + " Lecture" + i, lecture);
+                result.put(module.name() + " Lecture" + i, lecture);
                 i++;
             }
         }
@@ -35,13 +35,13 @@ public class Schedule {
     private boolean findExercises(int amount, model.Module[] modulesWithExercise){
         if(amount == modulesWithExercise.length)
             return true;
-        for(Lesson exercise : modulesWithExercise[amount].getExercises()){
-            if(overlap(exercise))
+        for(Lesson exercise : modulesWithExercise[amount].exercises()){
+            if(anyOverlap(exercise))
                 continue;
-            result.put(modulesWithExercise[amount].getName() + " Exercise", exercise);
+            result.put(modulesWithExercise[amount].name() + " Exercise", exercise);
             if (findExercises(amount + 1, modulesWithExercise))
                 return true;
-            result.remove(modulesWithExercise[amount].getName() + " Exercise");
+            result.remove(modulesWithExercise[amount].name() + " Exercise");
         }
         return false;
     }
@@ -49,26 +49,20 @@ public class Schedule {
     private model.Module[] modulesWithExercise(){
         List<model.Module> modulesWithExercise = new ArrayList<>();
         for(model.Module module : modules){
-            if(module.getExercises() == null || module.getExercises().isEmpty())
+            if(module.exercises() == null || module.exercises().isEmpty())
                 continue;
             modulesWithExercise.add(module);
         }
         return modulesWithExercise.toArray(new Module[0]);
     }
 
-    private boolean overlap(Lesson lesson1, Lesson lesson2){
-        return  lesson1.getDay() == lesson2.getDay() &&
-                lesson2.getStartTime().isBefore(lesson1.getEndTime()) &&
-                lesson1.getEndTime().isAfter(lesson2.getStartTime());
+    private boolean overlapping(Lesson lesson1, Lesson lesson2){
+        return  lesson1.day() == lesson2.day() &&
+                lesson2.startTime().isBefore(lesson1.endTime()) &&
+                lesson1.startTime().isBefore(lesson2.startTime());
     }
 
-    private boolean overlap(Lesson lesson){
-        for(Lesson lessonToCheck : result.values()){
-            if(overlap(lesson, lessonToCheck)) {
-                System.out.println(String.format("%c", 0x0001F97A));
-                return true;
-            }
-        }
-        return false;
+    private boolean anyOverlap(Lesson lesson) {
+        return result.values().stream().anyMatch( l -> overlapping(lesson, l) );
     }
 }

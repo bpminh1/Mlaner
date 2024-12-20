@@ -66,8 +66,8 @@ public class ScheduleController {
     }
 
     private List<Integer> getRows(Lesson lesson){
-        LocalTime startTime = lesson.getStartTime();
-        LocalTime endTime = lesson.getEndTime();
+        LocalTime startTime = lesson.startTime();
+        LocalTime endTime = lesson.endTime();
         int startRow = getRow(startTime);
         int endRow = getRow(endTime);
         List<Integer> rows = new ArrayList<>();
@@ -97,7 +97,7 @@ public class ScheduleController {
     }
 
     private int getColumn(Lesson lesson){
-        return switch(lesson.getDay()){
+        return switch(lesson.day()){
             case MONDAY -> 1;
             case TUESDAY -> 2;
             case WEDNESDAY -> 3;
