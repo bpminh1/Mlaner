@@ -215,12 +215,12 @@ public class InputController implements Initializable {
      * @param event The ActionEvent triggered by the edit button
      */
     public void editDisplay(Module module, Lesson lecture, Lesson exercise, ActionEvent event){
-        moduleName.setText(module.name());
+        moduleName.setText(module.name);
 
-        optionsLecture.setAll(module.lectures());
+        optionsLecture.setAll(module.lectures);
         listViewLecture.setItems(optionsLecture);
 
-        optionsExercise.setAll(module.exercises());
+        optionsExercise.setAll(module.exercises);
         listViewExercise.setItems(optionsExercise);
 
         if(lecture != null){

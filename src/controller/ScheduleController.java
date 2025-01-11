@@ -19,13 +19,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller class for the Schedule screen
+ */
 public class ScheduleController {
-
-
+    /**
+     * The Pane when a schedule is successfully created
+     */
     @FXML AnchorPane success;
+    /**
+     * The Pane when a schedule cannot be created
+     */
     @FXML AnchorPane fail;
+    /**
+     * The grid to position each {@link Lesson}
+     */
     @FXML GridPane grid;
 
+    /**
+     * Create a map for each node of the grid
+     *
+     * @return The map with the position of each node
+     */
     private HashMap<String, Node> getNodes(){
         HashMap<String, Node> nodes = new HashMap<>();
         for(Node node : grid.getChildren()){
@@ -34,37 +49,67 @@ public class ScheduleController {
         return nodes;
     }
 
+    /**
+     * Find the result for the given database
+     */
     public void findResult(){
         Schedule schedule = new Schedule(DataBase.modules.toArray(new Module[0]));
         HashMap<String, Lesson> result = schedule.getResult();
+
         if(result == null){
             success.setVisible(false);
             fail.setVisible(true);
         }
         else{
-            HashMap<String, Node> nodes = getNodes();
-            for(Map.Entry<String, Lesson> entrySet : result.entrySet()){
-                for(int row : getRows(entrySet.getValue())){
-                    String text = entrySet.getKey();
-                    if(text.matches(".*Lecture\\d+$"))
-                        text = text.substring(0, text.length()-1);
-
-                    Node node = nodes.get(row+","+getColumn(entrySet.getValue()));
-                    ((Text)node).setText(text);
-
-                    Tooltip tooltip = new Tooltip(text + "\n" + entrySet.getValue().toString());
-                    tooltip.setFont(Font.font("Comic Sans MS"));
-                    tooltip.setShowDelay(Duration.millis(0));
-                    tooltip.setShowDuration(Duration.minutes(2));
-
-                    Tooltip.install(node, tooltip);
-                }
-            }
+            placeSchedule(result);
             success.setVisible(true);
             fail.setVisible(false);
         }
     }
 
+    /**
+     * Place the found schedule in the correct position of the grid
+     *
+     * @param result The final schedule
+     */
+    private void placeSchedule(HashMap<String, Lesson> result){
+        HashMap<String, Node> nodes = getNodes();
+        for(Map.Entry<String, Lesson> entrySet : result.entrySet()){
+            for(int row : getRows(entrySet.getValue())){
+                String text = entrySet.getKey();
+                if(text.matches(".*Lecture\\d+$"))
+                    text = text.substring(0, text.length()-1);
+
+                Node node = nodes.get(row+","+getColumn(entrySet.getValue()));
+                ((Text)node).setText(text);
+
+                setUpToolTip(text, entrySet, node);
+            }
+        }
+    }
+
+    /**
+     * Set up the tooltip for each lesson
+     *
+     * @param text Name of the lesson
+     * @param entrySet The EntrySet of the result map
+     * @param node The node where to put the ToolTip
+     */
+    private void setUpToolTip(String text, Map.Entry<String, Lesson> entrySet, Node node){
+        Tooltip tooltip = new Tooltip(text + "\n" + entrySet.getValue().toString());
+        tooltip.setFont(Font.font("Comic Sans MS"));
+        tooltip.setShowDelay(Duration.millis(0));
+        tooltip.setShowDuration(Duration.minutes(2));
+
+        Tooltip.install(node, tooltip);
+    }
+
+    /**
+     * Finds all the rows that the lesson should be put
+     *
+     * @param lesson The lesson to check
+     * @return All the rows for the lesson
+     */
     private List<Integer> getRows(Lesson lesson){
         LocalTime startTime = lesson.startTime();
         LocalTime endTime = lesson.endTime();
@@ -77,6 +122,12 @@ public class ScheduleController {
         return rows;
     }
 
+    /**
+     * Gets the row that has the time of a lesson
+     *
+     * @param time The time to check
+     * @return The row
+     */
     private int getRow(LocalTime time){
         LocalTime[] localTimeList = new LocalTime[]{
                 LocalTime.of(8,0),
@@ -96,6 +147,12 @@ public class ScheduleController {
         return 5;
     }
 
+    /**
+     * Gets the column that has the day of the lesson
+     *
+     * @param lesson The lesson to check
+     * @return The column
+     */
     private int getColumn(Lesson lesson){
         return switch(lesson.day()){
             case MONDAY -> 1;
@@ -107,6 +164,14 @@ public class ScheduleController {
         };
     }
 
+    /**
+     * Checks if the lesson is between the start and end time
+     *
+     * @param start The start time according to the pre-defined time
+     * @param end The end time according to the pre-defined time
+     * @param real The real time of the lesson
+     * @return True if {@param real} is between {@param start} and {@param end}
+     */
     private boolean checkInterval(LocalTime start, LocalTime end, LocalTime real){
         return (real.isAfter(start) || real.equals(start)) && real.isBefore(end);
     }

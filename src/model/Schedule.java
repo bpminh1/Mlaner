@@ -52,12 +52,12 @@ public class Schedule {
     private boolean sortLectures(){
         for(Module module : modules){
             int i = 1;
-            if(module.lectures() == null || module.lectures().isEmpty())
+            if(module.lectures == null || module.lectures.isEmpty())
                 continue;
-            for(Lesson lecture : module.lectures()) {
+            for(Lesson lecture : module.lectures) {
                 if(anyOverlap(lecture))
                     return false;
-                result.put(module.name() + " Lecture" + i, lecture);
+                result.put(module.name + " Lecture" + i, lecture);
                 i++;
             }
         }
@@ -75,13 +75,13 @@ public class Schedule {
     private boolean findExercises(int amount, model.Module[] modulesWithExercise){
         if(amount == modulesWithExercise.length)
             return true;
-        for(Lesson exercise : modulesWithExercise[amount].exercises()){
+        for(Lesson exercise : modulesWithExercise[amount].exercises){
             if(anyOverlap(exercise))
                 continue;
-            result.put(modulesWithExercise[amount].name() + " Exercise", exercise);
+            result.put(modulesWithExercise[amount].name + " Exercise", exercise);
             if (findExercises(amount + 1, modulesWithExercise))
                 return true;
-            result.remove(modulesWithExercise[amount].name() + " Exercise");
+            result.remove(modulesWithExercise[amount].name + " Exercise");
         }
         return false;
     }
@@ -94,7 +94,7 @@ public class Schedule {
     private model.Module[] modulesWithExercise(){
         List<model.Module> modulesWithExercise = new ArrayList<>();
         for(model.Module module : modules){
-            if(module.exercises() == null || module.exercises().isEmpty())
+            if(module.exercises == null || module.exercises.isEmpty())
                 continue;
             modulesWithExercise.add(module);
         }

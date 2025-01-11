@@ -7,12 +7,17 @@ import java.util.List;
  * Represents a module.
  * Consists of a name, lectures and exercises.
  * Lectures and exercises can be empty.
- *
- * @param name The name of the module
- * @param lectures The lectures of the module
- * @param exercises The exercises of the module
  */
-public record Module(String name, List<Lesson> lectures, List<Lesson> exercises) {
+public class Module{
+    public List<Lesson> exercises;
+    public List<Lesson> lectures;
+    public String name;
+
+    public Module(String name, List<Lesson> lectures, List<Lesson> exercises){
+        this.name = name;
+        this.lectures = new ArrayList<>(lectures);
+        this.exercises = new ArrayList<>(exercises);
+    }
 
     /**
      * Changes the exercises of the module
