@@ -19,12 +19,31 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controller class for the Input screen, managing user interaction and input handling
+ */
 public class InputController implements Initializable {
+    /**
+     * Button to edit a {@link Lesson}
+     */
     @FXML private Button edit;
+    /**
+     * Button to delete a {@link Lesson}
+     */
     @FXML private Button delete;
+    /**
+     * Label to display error messages
+     */
     @FXML private Label error;
+    /**
+     * ChoiceBoxes for selecting {@link Lesson}s days
+     */
     @FXML private ChoiceBox<DayOfWeek> dayLecture;
     @FXML private ChoiceBox<DayOfWeek> dayExercise;
+
+    /**
+     * TextFields for {@link Module}'s name and {@link Lesson}'s time input
+     */
     @FXML private TextField moduleName;
     @FXML private TextField startHourLecture;
     @FXML private TextField startMinuteLecture;
@@ -34,20 +53,41 @@ public class InputController implements Initializable {
     @FXML private TextField endMinuteLecture;
     @FXML private TextField endHourExercise;
     @FXML private TextField endMinuteExercise;
+
+    /**
+     * ListViews for displaying all {@link Lesson}s
+     */
     @FXML private ListView<Lesson> listViewExercise;
     @FXML private ListView<Lesson> listViewLecture;
 
+    /**
+     * Observable lists for storing lessons
+     */
     ObservableList<Lesson> optionsExercise = FXCollections.observableArrayList();
     ObservableList<Lesson> optionsLecture = FXCollections.observableArrayList();
 
+    /**
+     * Collections for storing text fields and choice boxes
+     */
     List<TextField> lectureTextFields;
     List<TextField> exerciseTextFields;
     List<ChoiceBox<DayOfWeek>> dayChoices;
 
+    /**
+     * Currently selected {@link Lesson}
+     */
     private Lesson selectedExercise;
     private Lesson selectedLecture;
+
+    /**
+     * SceneChanger for navigation
+     */
     private final SceneChanger sceneChanger = new SceneChanger();
 
+    /**
+     * Initializes the controller.
+     * Add listeners to all TextFields, ChoiceBoxes and ListViews.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         lectureTextFields = List.of(startHourLecture, startMinuteLecture, endHourLecture, endMinuteLecture);
@@ -55,19 +95,39 @@ public class InputController implements Initializable {
         dayChoices = List.of(dayLecture, dayExercise);
 
         moduleName.textProperty().addListener((observable, oldValue, newValue) -> error.setText(null));
+        setUpChoiceBox();
+        setUpTime();
+        addListenerToListView();
+    }
+
+    /**
+     * Sets up the ChoiceBoxes to have all weekdays.
+     */
+    private void setUpChoiceBox(){
         for(ChoiceBox<DayOfWeek> choiceBox : dayChoices){
             choiceBox.getItems().addAll(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY,
                     DayOfWeek.THURSDAY, DayOfWeek.FRIDAY);
             choiceBox.getSelectionModel().selectedItemProperty().
                     addListener((observable, oldValue, newValue) -> error.setText(null));
         }
+    }
+
+    /**
+     * Sets up the TextFields for time input.
+     */
+    private void setUpTime(){
         for(TextField field : lectureTextFields){
             field.textProperty().addListener((observable, oldValue, newValue) -> error.setText(null));
         }
         for(TextField field : exerciseTextFields){
             field.textProperty().addListener((observable, oldValue, newValue) -> error.setText(null));
         }
+    }
 
+    /**
+     * Adds listeners to the ListViews
+     */
+    private void addListenerToListView(){
         listViewExercise.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue)
                 -> selectedExercise = listViewListener(listViewExercise));
 
@@ -75,6 +135,11 @@ public class InputController implements Initializable {
                 -> selectedLecture = listViewListener(listViewLecture));
     }
 
+    /**
+     * Sets up listener to the ListView.
+     * @param listView The ListView to be set.
+     * @return the selected {@link Lesson} from the ListView
+     */
     private Lesson listViewListener(ListView<Lesson> listView){
         Lesson selectedLesson = listView.getSelectionModel().getSelectedItem();
         if(selectedLesson != null){
@@ -84,6 +149,11 @@ public class InputController implements Initializable {
         return selectedLesson;
     }
 
+    /**
+     * Handles the deletion of a selected lesson.
+     *
+     * @param event The ActionEvent triggered by the delete button.
+     */
     public void deleteButton(ActionEvent event){
         if(selectedExercise != null){
             removeFromOptions(false);
@@ -95,6 +165,12 @@ public class InputController implements Initializable {
         edit.setVisible(false);
     }
 
+    /**
+     * Remove the selected lesson from the ListView
+     *
+     * @param lecture True if the selected lesson is a lecture
+     *                False if the selected lesson is an exercise
+     */
     private void removeFromOptions(boolean lecture){
         if(lecture){
             optionsLecture.remove(selectedLecture);
@@ -106,6 +182,11 @@ public class InputController implements Initializable {
         }
     }
 
+    /**
+     * Handles the edition of a selected lesson.
+     *
+     * @param event The ActionEvent triggered by the edit button.
+     */
     public void editButton(ActionEvent event){
         if(selectedExercise != null){
             editTextField(selectedExercise,
@@ -125,6 +206,14 @@ public class InputController implements Initializable {
         delete.setVisible(false);
     }
 
+    /**
+     * Sets up the Input screen when this method is called from the Display screen
+     *
+     * @param module The selected module
+     * @param lecture The selected lecture
+     * @param exercise The selected exercise
+     * @param event The ActionEvent triggered by the edit button
+     */
     public void editDisplay(Module module, Lesson lecture, Lesson exercise, ActionEvent event){
         moduleName.setText(module.name());
 
@@ -144,6 +233,16 @@ public class InputController implements Initializable {
         }
     }
 
+    /**
+     * Changes the value of the TextFields to the selected lesson
+     *
+     * @param selectedLesson The selected lesson
+     * @param day The ChoiceBox for the day
+     * @param startHour The TextField for the start hour
+     * @param startMinute The TextField for the start minute
+     * @param endHour The TextField for the end hour
+     * @param endMinute The TextField for the end minute
+     */
     private void editTextField(Lesson selectedLesson,
                                ChoiceBox<DayOfWeek> day,
                                TextField startHour, TextField startMinute,
@@ -155,6 +254,11 @@ public class InputController implements Initializable {
         endMinute.setText(String.valueOf(selectedLesson.endTime().getMinute()));
     }
 
+    /**
+     * Handles the action of the add button
+     *
+     * @param event The ActionEvent triggered by the add button
+     */
     public void addButton(ActionEvent event) {
         Button sourceButton = (Button) event.getSource();
         String buttonId = sourceButton.getId();
@@ -175,6 +279,19 @@ public class InputController implements Initializable {
         }
     }
 
+    /**
+     * Add a lesson to the ListView.
+     *
+     * @param listView The ListView that the lesson should be added
+     * @param options The lesson to be added
+     * @param day The day of the lesson
+     * @param startHour The start hour of the lesson
+     * @param startMinute The start minute of the lesson
+     * @param endHour The end hour of the lesson
+     * @param endMinute The end minute of the lesson
+     * @param lecture If true, the lesson to be added is a lecture
+     *                If false, the lesson to be added is an exercise
+     */
     private void addLesson(ListView<Lesson> listView, ObservableList<Lesson> options,
                            ChoiceBox<DayOfWeek> day,
                            TextField startHour, TextField startMinute,
@@ -190,6 +307,12 @@ public class InputController implements Initializable {
         }
     }
 
+    /**
+     * Clears the TextFields for time input.
+     *
+     * @param lecture If true, clears the TextFields for lecture
+     *                If false, clears the TextFields for exercise
+     */
     private void clearLesson(boolean lecture){
         if(lecture){
             dayLecture.setValue(null);
@@ -203,6 +326,12 @@ public class InputController implements Initializable {
         }
     }
 
+    /**
+     * Changes to the Display screen, when user presses done.
+     *
+     * @param event The ActionEvent triggered by the done button
+     * @throws IOException if the FXML file cannot be loaded
+     */
     public void done(ActionEvent event) throws IOException {
         if(moduleName.getText().trim().isEmpty()){
             error.setText("Please enter a name for the module");
@@ -215,11 +344,24 @@ public class InputController implements Initializable {
         }
     }
 
+    /**
+     * Sorts the lessons according to the start time.
+     *
+     * @param options all the lessons to be sorted.
+     * @return a list of all lessons in a correct order
+     */
     private List<Lesson> sortLesson(ObservableList<Lesson> options){
         return options.stream().sorted(Comparator.comparing(Lesson::day).
                 thenComparing(Lesson::startTime)).toList();
     }
 
+    /**
+     * Changes the time from the input to a correct time format
+     *
+     * @param hour The input hour from the user
+     * @param minute The input minute from the user
+     * @return The {@link LocalTime} of the input time
+     */
     private LocalTime formatTime(TextField hour, TextField minute){
         try{
             int hourNumber = Integer.parseInt(hour.getText());
@@ -236,6 +378,15 @@ public class InputController implements Initializable {
         return null;
     }
 
+    /**
+     * Validates the time of a {@link Lesson}
+     *
+     * @param day the day of the lesson
+     * @param start the start time of the lesson
+     * @param end the end time of the lesson
+     * @return True if the time of the lesson is correct (start before end),
+     *         False if the time of the lesson wrong.
+     */
     private boolean validateDuration(DayOfWeek day, LocalTime start, LocalTime end){
         if(day == null)
             error.setText("Please choose a day");
@@ -243,5 +394,4 @@ public class InputController implements Initializable {
             error.setText("Please enter a valid interval");
         return day != null && start != null && end != null && start.isBefore(end);
     }
-
 }

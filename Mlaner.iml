@@ -10,7 +10,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="file:///Users/minhbui/javafx-sdk-23.0.1/lib" />
+          <root url="file://$USER_HOME$/javafx-sdk-23.0.1/lib" />
         </CLASSES>
         <JAVADOC />
         <NATIVE>
@@ -20,5 +20,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="javafx-swt" level="application" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>
