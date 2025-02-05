@@ -1,8 +1,10 @@
 package controller;
 
 import dataBase.DataBase;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -14,10 +16,7 @@ import model.Lesson;
 import model.Module;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller class for the Schedule screen
@@ -35,6 +34,14 @@ public class ScheduleController {
      * The grid to position each {@link Lesson}
      */
     @FXML GridPane grid;
+    /**
+     * The button to recreate another schedule
+     */
+    @FXML Button redo;
+    /**
+     * The list to store all nodes in grid with a lesson
+     */
+    private final List<Text> scheduleText = new ArrayList<>();
 
     /**
      * Create a map for each node of the grid
@@ -49,6 +56,13 @@ public class ScheduleController {
         return nodes;
     }
 
+    public void redo(ActionEvent e){
+        Collections.shuffle(DataBase.modules);
+        DataBase.modules.forEach(module -> Collections.shuffle(module.exercises));
+        scheduleText.forEach(text -> text.setText(""));
+        findResult();
+    }
+
     /**
      * Find the result for the given database
      */
@@ -59,11 +73,13 @@ public class ScheduleController {
         if(result == null){
             success.setVisible(false);
             fail.setVisible(true);
+            redo.setVisible(false);
         }
         else{
             placeSchedule(result);
             success.setVisible(true);
             fail.setVisible(false);
+            redo.setVisible(true);
         }
     }
 
@@ -73,7 +89,9 @@ public class ScheduleController {
      * @param result The final schedule
      */
     private void placeSchedule(HashMap<String, Lesson> result){
+        scheduleText.clear();
         HashMap<String, Node> nodes = getNodes();
+
         for(Map.Entry<String, Lesson> entrySet : result.entrySet()){
             for(int row : getRows(entrySet.getValue())){
                 String text = entrySet.getKey();
@@ -82,6 +100,8 @@ public class ScheduleController {
 
                 Node node = nodes.get(row+","+getColumn(entrySet.getValue()));
                 ((Text)node).setText(text);
+
+                scheduleText.add((Text) node);
 
                 setUpToolTip(text, entrySet, node);
             }
