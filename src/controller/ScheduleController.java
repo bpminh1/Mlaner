@@ -73,13 +73,11 @@ public class ScheduleController {
         if(result == null){
             success.setVisible(false);
             fail.setVisible(true);
-            redo.setVisible(false);
         }
         else{
             placeSchedule(result);
             success.setVisible(true);
             fail.setVisible(false);
-            redo.setVisible(true);
         }
     }
 

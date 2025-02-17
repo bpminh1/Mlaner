@@ -111,8 +111,8 @@ public class Schedule {
      */
     private boolean overlapping(Lesson lesson1, Lesson lesson2){
         return  lesson1.day() == lesson2.day() &&
-                lesson2.startTime().isBefore(lesson1.endTime()) &&
-                lesson1.startTime().isBefore(lesson2.startTime());
+                lesson1.startTime().isBefore(lesson2.endTime()) &&
+                lesson2.startTime().isBefore(lesson1.endTime());
     }
 
     /**

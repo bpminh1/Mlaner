@@ -2,6 +2,7 @@ package model;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.Objects;
 
 /**
  * Represents a lesson with a specific day and time.
@@ -21,5 +22,17 @@ public record Lesson(DayOfWeek day, LocalTime startTime, LocalTime endTime) {
     @Override
     public String toString() {
         return String.format("%s: from %s to %s", day(), startTime(), endTime());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Lesson lesson = (Lesson) o;
+        return day == lesson.day && Objects.equals(endTime, lesson.endTime) && Objects.equals(startTime, lesson.startTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(day, startTime, endTime);
     }
 }

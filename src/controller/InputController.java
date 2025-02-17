@@ -1,12 +1,16 @@
 package controller;
 
 import dataBase.DataBase;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Text;
 import model.Lesson;
 import model.Module;
 import view.SceneChanger;
@@ -31,6 +35,8 @@ public class InputController implements Initializable {
      * Button to delete a {@link Lesson}
      */
     @FXML private Button delete;
+    @FXML private Button addLecture;
+    @FXML private Button addExercise;
     /**
      * Label to display error messages
      */
@@ -98,6 +104,62 @@ public class InputController implements Initializable {
         setUpChoiceBox();
         setUpTime();
         addListenerToListView();
+        setEnterActions();
+    }
+
+    /**
+     * Sets Enter action to all Controls
+     */
+    private void setEnterActions(){
+        setEnterAction(null, moduleName, dayLecture);
+        setEnterAction(null, dayLecture, startHourLecture);
+        setEnterAction(dayLecture, startHourLecture, startMinuteLecture);
+        setEnterAction(startHourLecture, startMinuteLecture, endHourLecture);
+        setEnterAction(startMinuteLecture, endHourLecture, endMinuteLecture);
+        setEnterAction(endHourLecture, endMinuteLecture, addLecture);
+        setEnterAction(null, addLecture, dayExercise);
+        setEnterAction(null, dayExercise, startHourExercise);
+        setEnterAction(dayExercise, startHourExercise, startMinuteExercise);
+        setEnterAction(startHourExercise, startMinuteExercise, endHourExercise);
+        setEnterAction(startMinuteExercise, endHourExercise, endMinuteExercise);
+        setEnterAction(endHourExercise, endMinuteExercise, addExercise);
+        setEnterAction(null, addExercise, dayExercise);
+    }
+
+    /**
+     * Sets Enter action to one Control
+     * When the key Enter is pressed, it will change the focus to the next Control
+     * @param previous the previous Control
+     * @param current the current focussed Control
+     * @param next the next Control to focus on
+     */
+    private void setEnterAction(Control previous, Control current, Control next){
+        current.setOnKeyPressed(keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case ENTER -> {
+                    if (next instanceof Button button) button.fire();
+                    Platform.runLater(() -> focusAndShow(next));
+                }
+                case LEFT -> Platform.runLater(() -> focusAndShow(previous));
+                case RIGHT -> {
+                    if (!(next instanceof Button))
+                        Platform.runLater(() -> focusAndShow(next));
+                }
+            }
+        });
+    }
+
+    /**
+     * Moves focus to the next TextField or ChoiceBox
+     * If {@param control} is a ChoiceBox, shows it
+     * @param control the control to move focus to
+     */
+    private void focusAndShow(Control control){
+        if(control != null){
+            control.requestFocus();
+            if (control instanceof ChoiceBox<?> choiceBox)
+                choiceBox.show();
+        }
     }
 
     /**

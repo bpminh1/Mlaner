@@ -18,6 +18,11 @@
                   <Font name="Chalkboard Bold" size="25.0" />
                </font>
             </Label>
+            <Button fx:id="redo" layoutX="749.0" layoutY="14.0" mnemonicParsing="false" onAction="#redo" style="-fx-background-color: E2E0C8;" text="REDO" textFill="#818c78">
+               <font>
+                  <Font name="Chalkboard Bold" size="15.0" />
+               </font>
+            </Button>
             <GridPane fx:id="grid" gridLinesVisible="true" layoutX="7.0" layoutY="49.0" prefHeight="321.0" prefWidth="746.0" AnchorPane.leftAnchor="36.0" AnchorPane.rightAnchor="36.0">
               <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -179,11 +184,6 @@
                      </font></Text>
                </children>
             </GridPane>
-            <Button fx:id="redo" layoutX="749.0" layoutY="14.0" mnemonicParsing="false" onAction="#redo" style="-fx-background-color: E2E0C8;" text="REDO" textFill="#818c78">
-               <font>
-                  <Font name="Chalkboard Bold" size="15.0" />
-               </font>
-            </Button>
          </children>
       </AnchorPane>
       <AnchorPane fx:id="fail" prefHeight="400.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
